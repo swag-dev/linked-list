@@ -54,7 +54,7 @@ class LinkedList
         }
         void append(int value)
         {
-            if(length > 0)
+            if(length == 0)
             {
                 Node* newNode = new Node(value);
                 head = newNode;
@@ -125,12 +125,40 @@ class LinkedList
         }
         bool insert(int index, int value)
         {
-            if(index < 0 || index > length)
+            if(index < 0 || index > length + 1)
             {
                 return false;
             }
-
+            else if(index == 0)
+            {
+                prepend(value);
+            }
+            else if(index == length)
+            {
+                append(value);
+            }
+            else
+            {
+                Node* newNode = new Node(value);
+                Node* temp = get(index - 1);
+                newNode->next = temp->next;
+                temp->next = newNode;
+            }
+            length++;
             return true;
+        }
+        void deleteNode(int index)
+        {
+            if(index < 0 || index >= length) return;
+            if(index == 0) return deleteFirst();
+            if(index == length - 1) return deleteLast();
+
+            Node* prev = get(index - 1);
+            Node* temp = prev->next;
+
+            prev->next = temp->next;
+            delete temp;
+            length--;
         }
         Node* get(int index)
         {
@@ -173,10 +201,21 @@ class LinkedList
         {
             return length;
         }
-};
+        void reverse()
+        {
+            Node* temp = head;
+            head = tail;
+            tail = temp;
+            Node* before = nullptr;
+            Node* after = temp->next;
 
-int main()
-{
-    LinkedList* myLL = new LinkedList(4);
-    return 0;
-}
+            for(int i = 0; i < length; i++)
+            {   
+                after = temp->next;
+                temp->next = before;
+                before = temp;
+                temp = after;
+                
+            }
+        }
+};
